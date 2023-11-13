@@ -5,9 +5,9 @@ function NotesHeader() {
     <>
       <div className="note-app__header">
         <h1>Rifqi's Notes</h1>
-      </div>
-      <div className="note-search">
-        <input type="text" placeholder="Cari catatan..." />
+        <div className="note-search">
+          <input type="text" placeholder="Cari catatan..." />
+        </div>
       </div>
     </>
   );
