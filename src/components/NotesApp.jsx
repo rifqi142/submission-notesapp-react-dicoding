@@ -9,12 +9,17 @@ export default class NotesApp extends React.Component {
     super(props);
     this.state = {
       notes: getInitialData(),
+      filteredNotes: [],
     };
     this.onAddNote = this.onAddNote.bind(this);
     this.onDeleteNote = this.onDeleteNote.bind(this);
     this.onArchiveNote = this.onArchiveNote.bind(this);
     this.onUnarchiveNote = this.onUnarchiveNote.bind(this);
   }
+
+  renderNotes = (filteredNotes) => {
+    this.setState({ filteredNotes });
+  };
 
   onDeleteNote(id) {
     const notes = this.state.notes.filter((note) => note.id !== id);
@@ -26,7 +31,7 @@ export default class NotesApp extends React.Component {
       if (note.id === id) {
         return {
           ...note,
-          archived: true, // Menyimpan status catatan yang diarsipkan
+          archived: true,
         };
       }
       return note;
@@ -40,11 +45,11 @@ export default class NotesApp extends React.Component {
         notes: [
           ...prevState.notes,
           {
-            id: Date.now(), // Menggunakan Date.now() untuk mendapatkan timestamp
+            id: Date.now(),
             title,
             body,
-            createdAt: Date.now(),
             isArchived: false,
+            createdAt: Date.now(),
           },
         ],
       };
@@ -64,15 +69,23 @@ export default class NotesApp extends React.Component {
     this.setState({ notes });
   };
 
+  handleSearchInputChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
+  };
+
   render() {
+    const notesToDisplay = this.state.filteredNotes.length
+      ? this.state.filteredNotes
+      : this.state.notes;
+
     return (
       <>
-        <NotesHeader />
+        <NotesHeader renderNotes={this.renderNotes} notes={this.state.notes} />
         <div className="notes-app__body">
           <NotesInput addNote={this.onAddNote} />
           <h2>Catatan Aktif</h2>
           <NotesList
-            notes={this.state.notes}
+            notes={notesToDisplay}
             onDelete={this.onDeleteNote}
             onArchive={this.onArchiveNote}
             onUnarchive={this.onUnarchiveNote}
