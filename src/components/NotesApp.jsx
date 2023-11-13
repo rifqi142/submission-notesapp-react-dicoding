@@ -13,6 +13,7 @@ export default class NotesApp extends React.Component {
     this.onAddNote = this.onAddNote.bind(this);
     this.onDeleteNote = this.onDeleteNote.bind(this);
     this.onArchiveNote = this.onArchiveNote.bind(this);
+    this.onUnarchiveNote = this.onUnarchiveNote.bind(this);
   }
 
   onDeleteNote(id) {
@@ -25,7 +26,7 @@ export default class NotesApp extends React.Component {
       if (note.id === id) {
         return {
           ...note,
-          isArchived: true,
+          archived: true, // Menyimpan status catatan yang diarsipkan
         };
       }
       return note;
@@ -39,31 +40,44 @@ export default class NotesApp extends React.Component {
         notes: [
           ...prevState.notes,
           {
-            id: +new Date(),
+            id: Date.now(), // Menggunakan Date.now() untuk mendapatkan timestamp
             title,
             body,
-            createdAt: +new Date().toISOString,
+            createdAt: Date.now(),
             isArchived: false,
           },
         ],
       };
     });
   };
+
+  onUnarchiveNote = (id) => {
+    const notes = this.state.notes.map((note) => {
+      if (note.id === id) {
+        return {
+          ...note,
+          archived: false,
+        };
+      }
+      return note;
+    });
+    this.setState({ notes });
+  };
+
   render() {
     return (
       <>
         <NotesHeader />
         <div className="notes-app__body">
-          <NotesInput AddNote={this.onAddNote} />
+          <NotesInput addNote={this.onAddNote} />
           <h2>Catatan Aktif</h2>
           <NotesList
             notes={this.state.notes}
             onDelete={this.onDeleteNote}
-            onArchiveNote={this.onArchiveNote}
+            onArchive={this.onArchiveNote}
+            onUnarchive={this.onUnarchiveNote}
           />
         </div>
-        <h2>Arsip</h2>
-        <NotesList notes={this.state.notes} />
       </>
     );
   }

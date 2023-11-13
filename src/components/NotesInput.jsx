@@ -13,28 +13,20 @@ export default class NotesInput extends React.Component {
   }
 
   onTitleChangeEventHandler(event) {
-    this.setState(() => {
-      return {
-        title: event.target.value,
-      };
+    this.setState({
+      title: event.target.value,
     });
   }
 
   onBodyChangeEventHandler(event) {
-    this.setState(() => {
-      return {
-        body: event.target.value,
-      };
+    this.setState({
+      body: event.target.value,
     });
   }
 
   onSubmitEventHandler(event) {
     event.preventDefault();
-    this.props.onSubmit({
-      title: this.state.title,
-      body: this.state.body,
-    });
-    console.log(this.state);
+    this.props.addNote(this.state);
   }
 
   render() {
