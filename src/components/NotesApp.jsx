@@ -9,17 +9,14 @@ export default class NotesApp extends React.Component {
     super(props);
     this.state = {
       notes: getInitialData(),
-      filteredNotes: [],
+      search: "",
     };
     this.onAddNote = this.onAddNote.bind(this);
     this.onDeleteNote = this.onDeleteNote.bind(this);
     this.onArchiveNote = this.onArchiveNote.bind(this);
     this.onUnarchiveNote = this.onUnarchiveNote.bind(this);
+    this.onSearchNote = this.onSearchNote.bind(this);
   }
-
-  renderNotes = (filteredNotes) => {
-    this.setState({ filteredNotes });
-  };
 
   onDeleteNote(id) {
     const notes = this.state.notes.filter((note) => note.id !== id);
@@ -48,8 +45,8 @@ export default class NotesApp extends React.Component {
             id: Date.now(),
             title,
             body,
-            isArchived: false,
             createdAt: Date.now(),
+            archived: false,
           },
         ],
       };
@@ -69,23 +66,30 @@ export default class NotesApp extends React.Component {
     this.setState({ notes });
   };
 
-  handleSearchInputChange = (event) => {
-    this.setState({ searchQuery: event.target.value });
-  };
+  onSearchNote(event) {
+    const captureValue = event.target.value.toLowerCase();
+    this.setState({ search: captureValue });
+    event.preventDefault();
+  }
 
   render() {
-    const notesToDisplay = this.state.filteredNotes.length
-      ? this.state.filteredNotes
-      : this.state.notes;
-
+    const searchDatas = !this.state.search
+      ? this.state.notes
+      : this.state.notes.filter((note) =>
+          note.title.toLowerCase().includes(this.state.search)
+        );
+    const activeDatas = searchDatas.filter((note) => !note.archived);
+    const archiveDatas = searchDatas.filter((note) => note.archived);
     return (
       <>
-        <NotesHeader renderNotes={this.renderNotes} notes={this.state.notes} />
+        <NotesHeader onSearch={this.onSearchNote} />
         <div className="notes-app__body">
           <NotesInput addNote={this.onAddNote} />
-          <h2>Catatan Aktif</h2>
+          <h2>Active Notes</h2>
           <NotesList
-            notes={notesToDisplay}
+            notes={this.state.notes}
+            activeDatas={activeDatas}
+            archiveDatas={archiveDatas}
             onDelete={this.onDeleteNote}
             onArchive={this.onArchiveNote}
             onUnarchive={this.onUnarchiveNote}

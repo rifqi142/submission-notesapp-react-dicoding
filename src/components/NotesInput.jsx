@@ -37,14 +37,15 @@ export default class NotesInput extends React.Component {
     return (
       <form className="note-input" onSubmit={this.onSubmitEventHandler}>
         <br />
-        <h2>Buat Catatan</h2>
-        <p className="note-input__title__char-limit">
-          sisa karakter : {50 - this.state.title.length}
+        <h2>Create your new notes</h2>
+        <p className="note-input__title__char-limit" style={{ color: "red" }}>
+          remaining title characters: {50 - this.state.title.length}
         </p>
+
         <input
           className="note-input-title"
           type="text"
-          placeholder="Ini adalah judul ..."
+          placeholder="Input your notes title ..."
           value={this.state.title}
           onChange={this.onTitleChangeEventHandler}
           maxLength={50}
@@ -53,12 +54,12 @@ export default class NotesInput extends React.Component {
         <textarea
           className="note-input-body"
           type="text"
-          placeholder="Tuliskan catatan mu disini ..."
+          placeholder="Write your notes here ..."
           value={this.state.body}
           onChange={this.onBodyChangeEventHandler}
           required
         />
-        <button type="submit">Buat Catatan</button>
+        <button type="submit">Create Notes</button>
       </form>
     );
   }
